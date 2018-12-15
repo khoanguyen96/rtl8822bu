@@ -95,8 +95,9 @@ CONFIG_RTW_SDIO_PM_KEEP_POWER = y
 ###################### MP HW TX MODE FOR VHT #######################
 CONFIG_MP_VHT_HW_TX_MODE = n
 ###################### Platform Related #######################
-CONFIG_PLATFORM_I386_PC = y
+CONFIG_PLATFORM_I386_PC = n
 CONFIG_PLATFORM_ARM_RPI = n
+CONFIG_PLATFORM_ARM64_RPRO64 = y
 CONFIG_PLATFORM_ANDROID_X86 = n
 CONFIG_PLATFORM_ANDROID_INTEL_X86 = n
 CONFIG_PLATFORM_JB_X86 = n
@@ -1051,6 +1052,21 @@ KVER ?= $(shell uname -r)
 KSRC := /lib/modules/$(KVER)/build
 MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
 INSTALL_PREFIX :=
+endif
+
+ifeq ($(CONFIG_PLATFORM_ARM64_RPRO64), y)
+# EXTRA_CFLAGS += -DCONFIG_PLATFORM_ROCKCHIPS
+EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
+EXTRA_CFLAGS += -DCONFIG_CONCURRENT_MODE
+EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
+EXTRA_CFLAGS += -DPLATFORM_LINUX
+ARCH ?= arm64
+CROSS_COMPILE ?= ../prebuilts/gcc/linux-x86/aarch64/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+KVER ?= $(shell uname -r)
+# KSRC := /lib/modules/$(KVER)/build
+KSRC := ../rockchip-linux-kernel
+# MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/
+MODULE_NAME := wlan
 endif
 
 ifeq ($(CONFIG_PLATFORM_NV_TK1), y)
